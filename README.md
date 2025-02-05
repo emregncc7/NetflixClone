@@ -132,13 +132,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 - Angular team for the amazing framework
 - Bootstrap team for responsive design tools
 
-## 📧 Contact
+ ## 👥 Developer  
 
-Your Name - [@yourusername](https://twitter.com/yourusername)
-
-Project Link: [https://github.com/yourusername/mitatflix](https://github.com/yourusername/mitatflix)
-
----
-⭐️ From [yourusername](https://github.com/yourusername)
-
-
+- 👨‍💻 **Emre Genç**  
+  - 🔗 LinkedIn: [emregenc7](https://www.linkedin.com/in/emregenc7/)  
