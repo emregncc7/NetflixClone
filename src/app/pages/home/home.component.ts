@@ -1,6 +1,5 @@
-import { Component , OnInit } from '@angular/core';
-import { MovieApiServiceService } from 'src/app/service/movie-api-service.service';
-
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { MovieApiServiceService } from '../../service/movie-api-service.service';
 
 @Component({
   selector: 'app-home',
@@ -8,9 +7,14 @@ import { MovieApiServiceService } from 'src/app/service/movie-api-service.servic
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-
-  constructor(private service:MovieApiServiceService){}
+  @ViewChild('movieSection') movieSection!: ElementRef;
   
+  bannerImage: string = '';
+  bannerTitle: string = '';
+  bannerOverview: string = '';
+
+  constructor(private service: MovieApiServiceService) { }
+
   bannerResult:any=[];
   trendingMovieResult:any=[];
   actionMovieResult:any = [];
@@ -21,8 +25,8 @@ export class HomeComponent implements OnInit {
   sciencefictionMovieResult:any = [];
   thrillerMovieResult:any = [];
   
-  ngOnInit(): void{
-    this.bannerData();
+  ngOnInit(): void {
+    this.loadBannerData();
     this.trendingData();
     this.actionMovie();
     this.adventureMovie();
@@ -33,11 +37,26 @@ export class HomeComponent implements OnInit {
     this.thrillerMovie();
   }
 
-  bannerData() {
-    this.service.bannerApiData().subscribe((result) => {
-      console.log(result, 'bannerresult#');
-      this.bannerResult = result.results;
+  loadBannerData() {
+    this.service.bannerApiData().subscribe({
+      next: (result) => {
+        console.log('Banner Data:', result);
+        this.bannerImage = result.backdrop_path;
+        this.bannerTitle = result.original_title;
+        this.bannerOverview = result.overview;
+        console.log('Banner Image Path:', this.bannerImage);
+      },
+      error: (error) => {
+        console.error('Banner data error:', error);
+        this.bannerImage = 'assets/img/default-banner.jpg';
+      }
     });
+  }
+
+  handleImageError(event: any) {
+    const imgElement = event.target as HTMLImageElement;
+    console.error('Image load error:', imgElement.src);
+    imgElement.src = 'assets/img/default-banner.jpg';
   }
   
   trendingData(){
@@ -98,5 +117,10 @@ export class HomeComponent implements OnInit {
     })
   }
 
-
+  scrollToMovies() {
+    this.movieSection.nativeElement.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    });
+  }
 }

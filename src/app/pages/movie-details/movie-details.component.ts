@@ -1,4 +1,4 @@
-import { Component ,OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MovieApiServiceService } from 'src/app/service/movie-api-service.service';
 
@@ -8,47 +8,33 @@ import { MovieApiServiceService } from 'src/app/service/movie-api-service.servic
   styleUrls: ['./movie-details.component.css']
 })
 export class MovieDetailsComponent implements OnInit {
-
-constructor(private service:MovieApiServiceService,private router:ActivatedRoute){}
-getMovieDetailResult:any;
-getMovieVideoResult:any;
-getMovieCastResult:any;
-
-ngOnInit(): void {
-  let getParamId = this.router.snapshot.paramMap.get('id')
-  console.log(getParamId,'getparamid#');  
-  this.getMovie(getParamId);
-  this.getVideo(getParamId);
-  this.getMovieCast(getParamId)
-}
-
-getMovie(id:any){
-  this.service.getMovieDetails(id).subscribe((result)=>{
-    console.log(result,'getmoviedetails#');
-    this.getMovieDetailResult =  result;
   
-});
-}
+  constructor(private service: MovieApiServiceService, private router: ActivatedRoute) { }
+  
+  movieDetails: any;
+  
+  ngOnInit(): void {
+    const movieId = this.router.snapshot.paramMap.get('id');
+    if (movieId) {
+      this.getMovie(movieId);
+    }
+  }
 
-getVideo(id:any)
-{
-  this.service.getMovieVideo(id).subscribe((result)=>{
-    console.log(result,'getMovieVideo#');
-    result.results.array.forEach((element:any) => {
-      if(element.type=="Trailer" ){
-        this.getMovieVideoResult = element.key;
+  getMovie(id: string): void {
+    this.service.getMovieDetails(id).subscribe(
+      (result) => {
+        console.log('Movie Details:', result);
+        this.movieDetails = result;
+      },
+      (error) => {
+        console.error('Error fetching movie details:', error);
       }
-    });
-    
-    
-  });
-}
+    );
+  }
 
-getMovieCast(id:any){
-  this.service.getMovieCast(id).subscribe((result)=>{
-    console.log(result,'movieCast#');
-    this.getMovieCastResult = result.cast;
-    
-  })
-}
+  handleImageError(event: any) {
+    const imgElement = event.target as HTMLImageElement;
+    console.error('Image load error:', imgElement.src);
+    imgElement.src = 'assets/img/notfound.jpg';
+  }
 }

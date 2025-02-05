@@ -1,36 +1,128 @@
-
-<div class="contain mt-5 p-5 ">
-<form [formGroup]="searchForm" (ngSubmit)="submitForm()">
-    <div class="row">
-        <div class="mb-3 col-lg-10">
-            <input type="text" class="form-control" formControlName="movieName" placeholder="Film/Dizi Ara..">
-          </div>
-
-          <div class="col-lg-2">
-            <button class="btn btn-md">Ara</button>
-          </div>
-    </div>
-  
-</form>
-
-
-
-
-
-<div class="row mt-5">
-    <div class="col-lg-4" *ngFor="let s of searchResult">
+<div class="contain mt-5 p-5">
+    <form [formGroup]="searchForm" (ngSubmit)="submitForm()">
         <div class="row">
-            <div class="col-lg-3 mt-4 mb-4" *ngIf="s.poster_path">
-               
-                <img src="https://image.tmdb.org/t/p/original/{{ s.poster_path }}" routerLink=""
-                [routerLink]="['/movie',s.id]">
+            <div class="mb-3 col-lg-10">
+                <input type="text" 
+                       class="form-control" 
+                       formControlName="movieName" 
+                       placeholder="Film Ara.."
+                       (keyup.enter)="submitForm()">
+            </div>
+            <div class="col-lg-2">
+                <button class="btn btn-primary">Ara</button>
+            </div>
+        </div>
+    </form>
 
+    <div class="row mt-5">
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4" *ngFor="let movie of searchResult">
+            <div class="search-movie-card">
+                <img [src]="movie.poster_path" 
+                     class="card-img-top" 
+                     [alt]="movie.title"
+                     (error)="handleImageError($event)"
+                     [routerLink]="['/movie', movie.id]">
+                <div class="card-body">
+                    <h5 class="card-title text-white">{{movie.title}}</h5>
+                    <p class="card-text">
+                        <small class="text-muted">{{movie.year}}</small>
+                    </p>
+                    <button class="btn btn-sm btn-outline-primary" 
+                            [routerLink]="['/movie', movie.id]">
+                        Detaylar
+                    </button>
+                </div>
             </div>
-            <div class="col-lg-9 mt-4 mb-4">
-                    <h5>{{s.original_title}}</h5>
-                    
-            </div>
-        </div>    
+        </div>
+    </div>
+
+    <!-- No Results Message -->
+    <div class="row mt-3" *ngIf="searchResult && searchResult.length === 0">
+        <div class="col-12 text-center">
+            <p class="text-muted">Film bulunamadı. Lütfen başka bir arama yapın.</p>
+        </div>
     </div>
 </div>
-</div>
+
+<style>
+.search-movie-card {
+    background: #141414;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    height: 100%;
+    cursor: pointer;
+}
+
+.search-movie-card:hover {
+    transform: scale(1.03);
+}
+
+.search-movie-card img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 1rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.7));
+}
+
+.card-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.form-control {
+    background-color: #333;
+    border: none;
+    color: #fff;
+    padding: 0.8rem 1rem;
+}
+
+.form-control:focus {
+    background-color: #444;
+    color: #fff;
+    box-shadow: none;
+    border-color: #666;
+}
+
+.btn-primary {
+    width: 100%;
+    background-color: #e50914;
+    border: none;
+    padding: 0.8rem;
+}
+
+.btn-primary:hover {
+    background-color: #b2070f;
+}
+
+.btn-outline-primary {
+    color: #fff;
+    border-color: #e50914;
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+}
+
+.btn-outline-primary:hover {
+    background-color: #e50914;
+    border-color: #e50914;
+}
+
+@media (max-width: 768px) {
+    .search-movie-card img {
+        height: 300px;
+    }
+}
+
+@media (max-width: 576px) {
+    .search-movie-card img {
+        height: 250px;
+    }
+}
+</style>

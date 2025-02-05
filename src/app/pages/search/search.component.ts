@@ -1,8 +1,6 @@
-import { Component , OnInit } from '@angular/core';
-import {FormControl , FormGroup} from '@angular/forms'
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MovieApiServiceService } from 'src/app/service/movie-api-service.service';
-
-
 
 @Component({
   selector: 'app-search',
@@ -10,25 +8,36 @@ import { MovieApiServiceService } from 'src/app/service/movie-api-service.servic
   styleUrls: ['./search.component.css']
 })
 export class SearchComponent implements OnInit {
+  
+  constructor(private service: MovieApiServiceService) { }
+  
+  searchResult: any;
+  searchForm = new FormGroup({
+    'movieName': new FormControl('')  // Default empty string instead of null
+  });
 
-    constructor(private service:MovieApiServiceService) { }
-    ngOnInit(): void{
-      
+  ngOnInit(): void {
+  }
+
+  submitForm() {
+    const searchValue = this.searchForm.value.movieName;
+    if (searchValue && searchValue.trim() !== '') {
+      this.service.getSearchMovie({ movieName: searchValue }).subscribe(
+        (result) => {
+          console.log('Search Results:', result);
+          this.searchResult = result.results;
+        },
+        (error) => {
+          console.error('Search Error:', error);
+          this.searchResult = [];
+        }
+      );
     }
+  }
 
-    searchResult : any;
-    searchForm = new FormGroup({
-      'movieName': new FormControl(null)
-    })
-
-    submitForm(){
-      console.log(this.searchForm.value,'searchform#');
-      this.service.getSearchMovie(this.searchForm.value).subscribe((result)=>{
-        console.log(result,'searchmovie##');
-        this.searchResult=result.results;
-        
-      })
-      
-    }
-
+  handleImageError(event: any) {
+    const imgElement = event.target as HTMLImageElement;
+    console.error('Image load error:', imgElement.src);
+    imgElement.src = 'assets/img/notfound.jpg';
+  }
 }
